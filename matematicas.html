@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SUPER PÁGINA: Inyectiva · Sobreyectiva · Biyectiva — Diego, Elvis & Juan</title>
+
+<!--
+  Instrucciones:
+  1) Crea un archivo index.html en VSCode
+  2) Pega TODO este código y guarda
+  3) Instala la extensión Live Server (si no la tienes)
+  4) Click derecho en el archivo -> Open with Live Server
+-->
+
+<style>
+  :root{
+    --bg:#071017;
+    --card:#0f1720;
+    --accent1:#ff3860; /* rojo */
+    --accent2:#36b0ff; /* azul */
+    --accent3:#ffd24a; /* amarillo */
+    --accent4:#34d399; /* verde */
+    --accent5:#ff8a00; /* naranja */
+    --muted:#9aa4b2;
+    --glass: rgba(255,255,255,0.03);
+    --glass-2: rgba(255,255,255,0.04);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    background: radial-gradient(1200px 600px at 10% 10%, rgba(53,68,255,0.06), transparent),
+                radial-gradient(1000px 500px at 90% 90%, rgba(255,120,0,0.04), transparent),
+                var(--bg);
+    color:#e6eef6;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    line-height:1.5;
+  }
+
+  header{
+    padding:28px 20px;
+    display:flex;
+    gap:20px;
+    align-items:center;
+    justify-content:space-between;
+    background:linear-gradient(90deg,var(--accent1),var(--accent5),var(--accent3),var(--accent4),var(--accent2));
+    box-shadow:0 6px 30px rgba(0,0,0,0.5);
+    color:#041022;
+  }
+  header .title{
+    font-weight:800;
+    font-size:20px;
+    letter-spacing:0.6px;
+  }
+  header .subtitle{
+    font-weight:600;
+    font-size:13px;
+    opacity:0.95;
+  }
+  header .creators{
+    text-align:right;
+    font-size:13px;
+    color: rgba(4,16,34,0.85);
+  }
+
+  nav{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    padding:12px 20px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.03));
+    position:sticky;
+    top:0;
+    z-index:55;
+    border-bottom:1px solid rgba(255,255,255,0.02);
+  }
+  .nav-btn{
+    padding:10px 14px;
+    border-radius:10px;
+    background:var(--glass);
+    border:1px solid rgba(255,255,255,0.02);
+    color:var(--muted);
+    cursor:pointer;
+    transition:all .18s ease;
+    font-weight:700;
+  }
+  .nav-btn:hover{ transform:translateY(-3px); color:white; background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.03)); }
+
+  .container{
+    max-width:1100px;
+    margin:24px auto;
+    padding:18px;
+  }
+
+  .card{
+    background:linear-gradient(180deg,var(--card), rgba(6,9,12,0.7));
+    border-radius:14px;
+    padding:18px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    border:1px solid rgba(255,255,255,0.02);
+    margin-bottom:18px;
+  }
+
+  h1,h2,h3{ margin:0 0 8px 0; }
+  h1{ font-size:28px; color:var(--accent2); }
+  h2{ font-size:22px; color:var(--accent3); }
+  h3{ font-size:18px; color:var(--accent1); }
+
+  p{ color:#cfe6ff; margin:8px 0 12px 0; }
+
+  /* layout columns */
+  .grid-3{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:16px;
+  }
+  @media (min-width:1100px){
+    .grid-3{ grid-template-columns: 1fr 1fr 1fr; }
+  }
+
+  /* colored badges */
+  .badge{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:999px;
+    font-weight:700;
+    font-size:13px;
+    color:#041022;
+    margin-right:8px;
+  }
+  .b-red{ background:var(--accent1); }
+  .b-blue{ background:var(--accent2); }
+  .b-yellow{ background:var(--accent3); }
+  .b-green{ background:var(--accent4); }
+  .b-orange{ background:var(--accent5); }
+
+  /* interactive elements */
+  .btn{
+    padding:10px 14px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+    font-weight:800;
+    color:#041022;
+    background:linear-gradient(90deg,var(--accent2),var(--accent4));
+    margin-right:10px;
+    transition:transform .12s ease;
+  }
+  .btn:active{ transform:scale(.98); }
+  .btn-outline{
+    background:transparent;
+    border:1.5px solid rgba(255,255,255,0.06);
+    color:var(--muted);
+  }
+
+  /* collapsible */
+  .collapsible{
+    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+    border-radius:10px;
+    padding:12px;
+    cursor:pointer;
+    border:1px solid rgba(255,255,255,0.02);
+    margin-top:10px;
+  }
+  .collapsible:hover{ transform:translateY(-3px); }
+
+  /* code block */
+  pre {
+    background: #07172a;
+    padding:12px;
+    border-radius:8px;
+    overflow:auto;
+    font-size:13px;
+    color:#bfe6ff;
+  }
+
+  /* table */
+  table{ width:100%; border-collapse:collapse; margin-top:12px; }
+  th,td{ padding:10px; border:1px solid rgba(255,255,255,0.03); text-align:left; font-size:15px; }
+  th{ background:rgba(255,255,255,0.02); color:var(--accent3); }
+
+  /* small helpers */
+  .muted{ color:var(--muted); font-size:13px; }
+  .center{ text-align:center; }
+  .small{ font-size:13px; color:#c6d8ea; }
+  .note{ background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:10px; border-radius:8px; margin-top:12px; color:#e9f7ff; }
+
+  /* SVG container */
+  .svg-wrap{ display:flex; gap:12px; align-items:center; justify-content:center; padding:12px; }
+
+  /* mapping UI */
+  .mapper{
+    display:flex;
+    gap:20px;
+    align-items:flex-start;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-top:12px;
+  }
+  .list{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));
+    padding:12px;
+    border-radius:10px;
+    min-width:160px;
+    text-align:center;
+  }
+  .list .item{
+    background:transparent;
+    border-radius:8px;
+    padding:8px 10px;
+    margin:8px 0;
+    border:1px dashed rgba(255,255,255,0.03);
+    cursor:pointer;
+    transition:all .12s;
+    font-weight:700;
+  }
+  .list .item:hover{ transform:scale(1.03); background:rgba(255,255,255,0.02); }
+
+  .status{
+    display:flex;
+    gap:8px;
+    margin-top:12px;
+    align-items:center;
+  }
+
+  /* quiz */
+  .quiz{ margin-top:12px; }
+  .quiz .q{ background:#071a25; padding:12px; border-radius:8px; margin-bottom:8px; }
+  .choices button{ display:block; width:100%; text-align:left; margin:6px 0; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.02); background:transparent; color:var(--muted); cursor:pointer; }
+  .choices button:hover{ background:rgba(255,255,255,0.02); color:white; }
+
+  /* footer */
+  footer{ text-align:center; padding:30px 10px; color:var(--muted); margin-top:30px; border-top:1px solid rgba(255,255,255,0.02); }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="title">SUPER PÁGINA MATEMÁTICA — Funciones: Inyectiva · Sobreyectiva · Biyectiva</div>
+    <div class="subtitle small">Explicaciones profundas, ejemplos, diagramas y ejercicios interactivos</div>
+  </div>
+  <div class="creators">
+    Creadores:<br>
+    <strong>Diego Toaza</strong>, <strong>Elvis Yánez</strong> & <strong>Juan Moreno</strong>
+  </div>
+</header>
+
+<nav>
+  <button class="nav-btn" onclick="navTo('intro')">Inicio</button>
+  <button class="nav-btn" onclick="navTo('inyectiva')">Inyectiva</button>
+  <button class="nav-btn" onclick="navTo('sobreyectiva')">Sobreyectiva</button>
+  <button class="nav-btn" onclick="navTo('biyectiva')">Biyectiva</button>
+  <button class="nav-btn" onclick="navTo('diagramas')">Diagramas</button>
+  <button class="nav-btn" onclick="navTo('ejercicios')">Ejercicios</button>
+  <button class="nav-btn" onclick="navTo('comparativa')">Comparativa</button>
+  <button class="nav-btn" onclick="navTo('inversa')">Funciones inversas</button>
+  <button class="nav-btn" onclick="navTo('referencias')">Referencias</button>
+</nav>
+
+<div class="container">
+
+  <!-- INTRO -->
+  <section id="intro" class="card" style="display:block;">
+    <h1>Bienvenido — ¿Qué vas a encontrar aquí?</h1>
+    <p class="muted">
+      Esta página está pensada para que entiendas, practiques y domines las nociones de <strong>inyectiva</strong>, <strong>sobreyectiva</strong> y <strong>biyectiva</strong>.
+      Todo con ejemplos, gráficas, tests visuales y ejercicios interactivos.
+    </p>
+
+    <div class="grid-3">
+      <div class="card">
+        <h2>⛳ Objetivo</h2>
+        <p>Que puedas identificar los tres tipos de funciones, hacer pruebas gráficas (horizontal line test), construir funciones inversas y resolver ejercicios de examen con confianza.</p>
+      </div>
+
+      <div class="card">
+        <h2>🧰 Herramientas</h2>
+        <p>Interactividad con JavaScript puro (sin bibliotecas), diagramas SVG, preguntas autocorregibles y enlaces internos para navegación rápida.</p>
+      </div>
+
+      <div class="card">
+        <h2>📌 Recomendado</h2>
+        <p>Abre este archivo en <strong>VSCode + Live Server</strong> para editar y ver cambios en caliente. Si quieres, te enseño a publicar la página online.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;">
+      <button class="btn" onclick="navTo('inyectiva')">Ir a Inyectiva</button>
+      <button class="btn btn-outline" onclick="navTo('ejercicios')">Ir a Ejercicios</button>
+    </div>
+  </section>
+
+  <!-- INYECTIVA -->
+  <section id="inyectiva" class="card" style="display:none;">
+    <h2>🔵 Inyectiva — Explicación completa</h2>
+    <p>
+      Una función <strong>inyectiva</strong> (también llamada "uno a uno") es aquella que asigna imágenes únicas a elementos distintos del dominio.
+      Formalmente: <em>si f(a) = f(b) entonces a = b.</em>
+    </p>
+
+    <div class="badge b-red">Características</div>
+    <div class="note">
+      <strong>Características clave de una función inyectiva</strong>
+      <ul class="small">
+        <li><b>"Uno a uno":</b> sinónimo más usado.</li>
+        <li><b>Imágenes únicas:</b> no hay dos elementos distintos del dominio con la misma imagen.</li>
+        <li><b>Formalmente:</b> si f(a)=f(b) ⇒ a=b.</li>
+        <li><b>No hay colisiones:</b> gráficamente, si una línea horizontal corta la gráfica en 2+ puntos ⇒ NO es inyectiva (horizontal line test).</li>
+        <li><b>Función inversa:</b> si además es sobreyectiva, la inversa existe y es función; si solo es inyectiva, la inversa existe como relación parcial.</li>
+      </ul>
+    </div>
+
+    <div style="margin-top:12px;" class="card">
+      <h3>Ejemplos con explicación</h3>
+
+      <div class="ejemplo">
+        <b>Ejemplo A</b>: f(x) = 2x  (dominio = ℝ, codominio = ℝ)  
+        <br>Razón: Si 2a = 2b ⇒ a = b. => Inyectiva.
+      </div>
+
+      <div class="ejemplo">
+        <b>Ejemplo B</b>: f(x) = x² (dominio = ℝ, codominio = ℝ)  
+        <br>Razón: f(2)=4 y f(-2)=4 ⇒ NO inyectiva (colisión).
+      </div>
+
+      <div class="ejemplo">
+        <b>Ejemplo C (discreto)</b>:
+        Conjuntos A = {a,b,c}, B = {1,2,3} con mappings a→1, b→2, c→3 ⇒ Inyectiva.
+      </div>
+
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <h3>Test visual: Horizontal Line Test (prueba gráfica)</h3>
+      <p class="small">Mueve la línea horizontal y fíjate si corta en más de un punto.</p>
+      <div class="svg-wrap">
+        <svg width="620" height="260" id="svg-iny">
+          <!-- axes -->
+          <rect x="0" y="0" width="100%" height="100%" fill="transparent"></rect>
+
+          <!-- example graph for y = x^2 -->
+          <path id="parabola" d="" stroke="#ffd24a" stroke-width="3" fill="none"></path>
+
+          <!-- horizontal line -->
+          <line id="hline" x1="40" x2="580" y1="160" y2="160" stroke="rgba(255,255,255,0.25)" stroke-width="3"></line>
+
+          <!-- draggable knob -->
+          <circle id="knob" cx="120" cy="160" r="8" fill="#36b0ff" stroke="white" stroke-width="1.5" style="cursor:grab"></circle>
+
+          <!-- labels -->
+          <text x="40" y="220" fill="#9fb8d9" font-size="12">-3</text>
+          <text x="580" y="220" fill="#9fb8d9" font-size="12">3</text>
+        </svg>
+      </div>
+      <div class="small muted">Observa: la parábola y = x² será cortada por líneas horizontales en 0, 1 o 2 puntos. Si alguna horizontal corta en 2 puntos → NO inyectiva.</div>
+      <div class="note" style="margin-top:10px;">
+        <strong>Consejo:</strong> Para confirmar inyectividad en funciones algebraicas intenta resolver f(a)=f(b) ⇒ a=b. Si resulta en a=b solamente, es inyectiva.
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <h3>Ejemplos avanzados y contraejemplos (más largos)</h3>
+
+      <p class="small"><b>1.</b> f: Z → Z definida por f(n) = 2n → inyectiva (enteros pares mantienen unicidad).</p>
+      <p class="small"><b>2.</b> f: R → R, f(x)=e^x → inyectiva (exponencial creciente).</p>
+      <p class="small"><b>3.</b> f: R→R, f(x)=sin(x) → NO inyectiva en R (periódica), aunque sí inyectiva si restringes dominio a [-π/2, π/2].</p>
+
+      <div class="muted small">Tip: muchas funciones no son inyectivas en todo el dominio, pero puedes <b>restringir</b> el dominio para hacerlas inyectivas (por ejemplo, x² restringida a x≥0).</div>
+    </div>
+
+    <div style="margin-top:12px;">
+      <button class="btn" onclick="expandText('iny-more')">Leer más (ejercicios y demostraciones)</button>
+    </div>
+
+    <div id="iny-more" style="display:none; margin-top:12px;">
+      <div class="card">
+        <h3>Demostración típica</h3>
+        <p>Para f(x)=2x: supongamos f(a)=f(b): 2a=2b ⇒ a=b. Así queda demostrado.</p>
+
+        <h3>Ejercicio guiado</h3>
+        <p>Determina si f(x)=x^3 + x es inyectiva en R. (Sugerencia: estudia f'(x) = 3x²+1 ≥ 1 → estrictamente creciente → inyectiva)</p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- SOBREYECTIVA -->
+  <section id="sobreyectiva" class="card" style="display:none;">
+    <h2>🟣 Sobreyectiva — Explicación completa</h2>
+
+    <p>
+      Una función <strong>sobreyectiva</strong> es aquella que <b>cubre todo el codominio</b>: para cada y en el codominio existe x en el dominio con f(x)=y.
+    </p>
+
+    <div class="badge b-yellow">Características</div>
+    <div class="note">
+      <ul class="small">
+        <li><b>Cubre el codominio:</b> no queda ningún valor sin preimagen.</li>
+        <li><b>Formalmente:</b> ∀ y ∈ codominio, ∃ x ∈ dominio tal que f(x)=y.</li>
+        <li><b>Se puede repetir la preimagen:</b> varios x pueden dar el mismo y y aun así ser sobreyectiva.</li>
+      </ul>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <h3>Ejemplos</h3>
+      <p class="small"><b>1.</b> f: R → R, f(x) = x³ → SOBREYECTIVA (cubre todos los reales).</p>
+      <p class="small"><b>2.</b> f: R → R, f(x) = 2x → NO sobreyectiva si el codominio es R (no genera valores impares). Si cambias el codominio a "conjunto de pares", entonces SÍ.</p>
+      <p class="small"><b>3.</b> f: Z→Z f(n)=⌊n/2⌋ → NO sobreyectiva si codominio=Z (porque no llega a todos los enteros positivos; depende de definición exacta).</p>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <h3>Visualización</h3>
+      <p class="small">Si quieres ver si es sobreyectiva, intenta despejar y y ver si puedes encontrar x para cualquier y del codominio.</p>
+
+      <div class="svg-wrap">
+        <svg width="520" height="120" id="svg-sur">
+          <rect width="100%" height="100%" fill="transparent"></rect>
+          <!-- domain circles -->
+          <circle cx="80" cy="40" r="14" fill="#36b0ff"></circle>
+          <circle cx="80" cy="80" r="14" fill="#36b0ff"></circle>
+
+          <!-- codomain -->
+          <circle cx="420" cy="30" r="14" fill="#ffd24a"></circle>
+          <circle cx="420" cy="60" r="14" fill="#ffd24a"></circle>
+          <circle cx="420" cy="90" r="14" fill="#ffd24a"></circle>
+
+          <!-- lines -->
+          <path d="M95 40 Q 250 40 405 30" stroke="#9fd6ff" stroke-width="2"/>
+          <path d="M95 80 Q 250 70 405 60" stroke="#9fd6ff" stroke-width="2"/>
+          <path d="M95 80 Q 250 110 405 90" stroke="#9fd6ff" stroke-width="2"/>
+        </svg>
+      </div>
+
+      <div class="small muted">En este dibujo, aunque el dominio tenga menos elementos la función puede ser sobreyectiva si sus imágenes cubren todo el codominio (aquí varios elementos del dominio pueden mapear a los del codominio). </div>
+    </div>
+
+    <div style="margin-top:12px;">
+      <button class="btn" onclick="expandText('sob-more')">Leer más (demostraciones & casos)</button>
+    </div>
+
+    <div id="sob-more" style="display:none; margin-top:12px;">
+      <div class="card">
+        <h3>Demostración e ideas</h3>
+        <p>Por ejemplo, la función sen(x) con codominio [-1,1] es sobreyectiva: para cada y∈[-1,1] existe x tal que sen(x)=y.</p>
+
+        <h3>Ejercicio guiado</h3>
+        <p>¿Es f(x)=e^x sobreyectiva en R? (Respuesta: No — no alcanza valores negativos).</p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- BIYECTIVA -->
+  <section id="biyectiva" class="card" style="display:none;">
+    <h2>🟢 Biyectiva — Explicación completa</h2>
+
+    <p>
+      Una función <strong>biyectiva</strong> combina las dos propiedades: es <em>inyectiva</em> y <em>sobreyectiva</em>. 
+      Eso significa una correspondencia perfecta uno-a-uno y sobre el codominio: ideal para invertir procesos.
+    </p>
+
+    <div class="badge b-green">Características</div>
+    <div class="note">
+      <ul class="small">
+        <li>Es inyectiva (no hay colisiones).</li>
+        <li>Es sobreyectiva (cubre el codominio).</li>
+        <li>Posee función inversa f⁻¹ definida en todo el codominio.</li>
+      </ul>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <h3>Ejemplos y construcción de inversa</h3>
+      <p class="small"><b>1.</b> f(x)=3x−2 en ℝ → biyectiva. Inversa: f⁻¹(y)=(y+2)/3</p>
+      <p class="small"><b>2.</b> f(x)=x³ en ℝ → biyectiva. Inversa: f⁻¹(y)=∛y</p>
+
+      <div class="note small">
+        <b>Importante:</b> si f es biyectiva entonces f⁻¹ compone con f para devolver el valor original: f⁻¹(f(x)) = x y f(f⁻¹(y)) = y.
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <h3>Construcción gráfica</h3>
+      <p class="small">Una gráfica que refleja respecto a la recta y=x la de su inversa. Si f es biyectiva entonces f y su inversa se corresponden por reflexión.</p>
+
+      <div class="svg-wrap">
+        <svg width="560" height="180" viewBox="0 0 560 180">
+          <rect width="100%" height="100%" fill="transparent"/>
+          <!-- y = x -->
+          <line x1="20" y1="160" x2="540" y2="20" stroke="#888" stroke-dasharray="4" />
+          <!-- example cubic -->
+          <path d="M20 150 C 120 110 260 40 540 20" stroke="#34d399" stroke-width="3" fill="none"/>
+          <text x="30" y="30" fill="#9fb8d9" font-size="12">Reflexión y=x</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIAGRAMAS -->
+  <section id="diagramas" class="card" style="display:none;">
+    <h2>📊 Diagramas interactivos y mapeos</h2>
+
+    <p class="small">Arrastra o haz click en elementos para construir relaciones. Usa los botones para ejemplos rápidos.</p>
+
+    <div class="mapper card">
+      <div class="list" id="domain">
+        <strong>Dominio</strong>
+        <div class="item" data-id="a">A</div>
+        <div class="item" data-id="b">B</div>
+        <div class="item" data-id="c">C</div>
+        <div class="item" data-id="d">D</div>
+      </div>
+
+      <div style="min-width:220px;">
+        <svg id="map-svg" width="420" height="260"></svg>
+        <div class="status" id="map-status"></div>
+        <div style="margin-top:10px;">
+          <button class="btn" onclick="autoExample('injective')">Ejemplo Inyectiva</button>
+          <button class="btn" onclick="autoExample('surjective')">Ejemplo Sobreyectiva</button>
+          <button class="btn" onclick="autoExample('bijective')">Ejemplo Biyectiva</button>
+          <button class="btn btn-outline" onclick="clearMapping()">Limpiar</button>
+        </div>
+      </div>
+
+      <div class="list" id="codomain">
+        <strong>Codominio</strong>
+        <div class="item" data-id="1">1</div>
+        <div class="item" data-id="2">2</div>
+        <div class="item" data-id="3">3</div>
+      </div>
+    </div>
+
+    <div class="note small" style="margin-top:12px;">
+      Haz click primero en un elemento del dominio (se resaltará), y luego en un elemento del codominio para crear una flecha.
+      Las flechas se dibujan automáticamente. Observa el panel de estado para ver si la relación es inyectiva/sobreyectiva/biyectiva.
+    </div>
+  </section>
+
+  <!-- EJERCICIOS -->
+  <section id="ejercicios" class="card" style="display:none;">
+    <h2>📝 Ejercicios interactivos (auto-corregibles)</h2>
+
+    <div class="quiz">
+      <div class="q">
+        <strong>1)</strong> Sea f: {1,2,3} → {a,b,c} con 1→a, 2→b, 3→b. ¿Cuál(es) es/son true?
+        <div class="choices" data-answer="not-inj-not-sur-not-bij">
+          <button onclick="checkAnswer(this,'not-inj-not-sur-not-bij')">A) Inyectiva</button>
+          <button onclick="checkAnswer(this,'not-inj-not-sur-not-bij')">B) Sobreyectiva</button>
+          <button onclick="checkAnswer(this,'not-inj-not-sur-not-bij')">C) Ninguna</button>
+        </div>
+      </div>
+
+      <div class="q">
+        <strong>2)</strong> f(x) = x³ (ℝ→ℝ). ¿Es biyectiva?
+        <div class="choices" data-answer="bij">
+          <button onclick="checkAnswer(this,'bij')">A) Sí</button>
+          <button onclick="checkAnswer(this,'bij')">B) No</button>
+        </div>
+      </div>
+
+      <div class="q">
+        <strong>3)</strong> ¿Cuál condición indica inyectividad formalmente?
+        <div class="choices" data-answer="inj-def">
+          <button onclick="checkAnswer(this,'inj-def')">A) ∀y ∈ codominio ∃x tal que f(x)=y</button>
+          <button onclick="checkAnswer(this,'inj-def')">B) si f(a)=f(b) ⇒ a=b</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="quiz-result" style="margin-top:12px;"></div>
+
+  </section>
+
+  <!-- COMPARATIVA -->
+  <section id="comparativa" class="card" style="display:none;">
+    <h2>📊 Tabla comparativa</h2>
+    <table>
+      <tr><th>Tipo</th><th>Propiedad</th><th>Ejemplo</th></tr>
+      <tr><td>Inyectiva</td><td>Imágenes únicas; una horizontal corta ≤1 punto.</td><td>f(x)=2x</td></tr>
+      <tr><td>Sobreyectiva</td><td>Cubre el codominio; ∀y ∈ codominio ∃x: f(x)=y.</td><td>f(x)=x³ (codominio ℝ)</td></tr>
+      <tr><td>Biyectiva</td><td>Inyectiva + Sobreyectiva; tiene inversa.</td><td>f(x)=3x−2</td></tr>
+    </table>
+
+    <div class="card" style="margin-top:12px;">
+      <h3>Comparación rápida</h3>
+      <p class="small">- Inyectiva: no duplicados. - Sobreyectiva: no faltantes. - Biyectiva: perfecto match.</p>
+    </div>
+  </section>
+
+  <!-- INVERSA -->
+  <section id="inversa" class="card" style="display:none;">
+    <h2>🔁 Función inversa — construcción y ejemplos</h2>
+
+    <div class="card">
+      <h3>Definición</h3>
+      <p class="small">Si f: A→B es biyectiva, existe una única función f⁻¹: B→A tal que f⁻¹(f(x)) = x y f(f⁻¹(y)) = y.</p>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <h3>Cómo calcularla (ejemplo paso a paso)</h3>
+      <pre>
+Ejemplo: f(x) = 3x - 2
+1) y = 3x -2
+2) despeja x: 3x = y + 2
+3) x = (y + 2)/3
+→ f⁻¹(y) = (y + 2)/3
+      </pre>
+      <div class="small muted">Sugerencia: sustituye y por x para escribir la inversa como función de x.</div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <h3>Comprobación interactiva</h3>
+      <p class="small">Introduce x y revisa f(f⁻¹(x)) y f⁻¹(f(x)).</p>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <input id="inv-x" type="number" placeholder="x" style="padding:8px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:white;">
+        <button class="btn" onclick="checkInverse()">Comprobar f↔f⁻¹</button>
+      </div>
+
+      <div id="inv-output" class="note" style="display:none;"></div>
+    </div>
+
+  </section>
+
+  <!-- REFERENCIAS / MATERIALES -->
+  <section id="referencias" class="card" style="display:none;">
+    <h2>📚 Notas, referencias y recursos</h2>
+
+    <p class="small">Aquí tienes apuntes y recursos recomendados (puedes agregar enlaces o PDFs).</p>
+
+    <div class="grid-3">
+      <div class="card">
+        <h3>Definiciones formales</h3>
+        <p class="small">Inyectiva, sobreyectiva y biyectiva (formas formales y ejemplos).</p>
+      </div>
+
+      <div class="card">
+        <h3>Aplicaciones</h3>
+        <p class="small">Inversas en álgebra lineal, criptografía, teoría de la computación.</p>
+      </div>
+
+      <div class="card">
+        <h3>Autores</h3>
+        <p class="small">Diego Toaza · Elvis Yánez · Juan Moreno — proyecto educativo 2025.</p>
+      </div>
+    </div>
+  </section>
+
+</div> <!-- fin container -->
+
+<footer>
+  © 2025 — Super Página Matemática • Hecho por Diego Toaza, Elvis Yánez y Juan Moreno.
+  <div class="small muted">Abre con Live Server en VSCode para mejor experiencia.</div>
+</footer>
+
+<script>
+/* ------------------------
+   Navegación interna
+   ------------------------ */
+function navTo(id){
+  // hide all sections
+  document.querySelectorAll('.container > section').forEach(s => s.style.display = 'none');
+  // show chosen
+  const el = document.getElementById(id);
+  if(el) el.style.display = 'block';
+  // scroll into view
+  el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+/* ------------------------
+   Expand/collapse helper
+   ------------------------ */
+function expandText(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.style.display = (el.style.display === 'none' || el.style.display === '') ? 'block' : 'none';
+  el.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+/* ------------------------
+   SVG parabola for horizontal test
+   ------------------------ */
+(function drawParabola(){
+  const svg = document.getElementById('svg-iny');
+  if(!svg) return;
+  const path = document.getElementById('parabola');
+  // map x from -3..3 to 40..580
+  const points = [];
+  for(let t=-300; t<=300; t+=6){
+    const x = (t/100)*1; // -3..3
+    const y = x*x; // x^2
+    // scale
+    const sx = 40 + ((x+3)/6) * (580-40);
+    // y from 0..9 map to svg y (higher value -> smaller y coordinate)
+    const sy = 160 - (y/9) * 120;
+    points.push([sx, sy]);
+  }
+  let d = 'M ' + points.map(p => p.join(' ')).join(' L ');
+  path.setAttribute('d', d);
+  // knob drag
+  const knob = document.getElementById('knob');
+  const hline = document.getElementById('hline');
+  let dragging=false;
+  knob.addEventListener('pointerdown', (e)=>{ dragging=true; knob.setPointerCapture(e.pointerId); });
+  document.addEventListener('pointerup',(e)=>{ dragging=false; if(knob.releasePointerCapture) try{knob.releasePointerCapture(e.pointerId)}catch(e){} });
+  document.addEventListener('pointermove',(e)=>{
+    if(!dragging) return;
+    const rect = svg.getBoundingClientRect();
+    let cx = e.clientX - rect.left;
+    if(cx<40) cx=40; if(cx>580) cx=580;
+    // update knob and horizontal line
+    knob.setAttribute('cx', cx);
+    hline.setAttribute('x1',40); hline.setAttribute('x2',580);
+    // compute y by finding y at that x on parabola (approx)
+    // invert: x value in -3..3:
+    const xx = ((cx-40)/(580-40))*6 - 3;
+    const yy = xx*xx;
+    const cy = 160 - (yy/9)*120;
+    knob.setAttribute('cy', cy);
+    hline.setAttribute('y1', cy);
+    hline.setAttribute('y2', cy);
+  });
+})();
+
+/* ------------------------
+   Mapping UI logic (diagramas)
+   ------------------------ */
+let mapping = {}; // leftId -> rightId
+
+function clearMapping(){
+  mapping = {};
+  renderMapping();
+}
+function autoExample(type){
+  clearMapping();
+  if(type==='injective'){
+    mapping = { a:'1', b:'2', c:'3', d:'-'}; // d unmatched
+  } else if(type==='surjective'){
+    // map several to ensure codomain covered
+    mapping = { a:'1', b:'1', c:'2', d:'3' };
+  } else if(type==='bijective'){
+    mapping = { a:'1', b:'2', c:'3', d:'-' }; // note: domain larger than codomain -> not bijective technically, but shows unique for first 3
+  }
+  renderMapping();
+}
+
+function renderMapping(){
+  const svg = document.getElementById('map-svg');
+  svg.innerHTML = '';
+  const domainItems = Array.from(document.querySelectorAll('#domain .item'));
+  const codomainItems = Array.from(document.querySelectorAll('#codomain .item'));
+  // positions:
+  const leftX = 40, rightX = 380;
+  const leftYstart = 30, rightYstart = 30;
+  const dy = 50;
+  // draw nodes
+  domainItems.forEach((el,i)=>{
+    const id = el.dataset.id;
+    const y = leftYstart + i*dy;
+    // draw circle and label
+    const circ = `<circle cx="${leftX}" cy="${y}" r="14" fill="#36b0ff"></circle>
+                  <text x="${leftX}" y="${y+5}" text-anchor="middle" font-size="12" fill="#021427">${id}</text>`;
+    svg.insertAdjacentHTML('beforeend', circ);
+    // click binding handled below
+  });
+  codomainItems.forEach((el,i)=>{
+    const id = el.dataset.id;
+    const y = rightYstart + i*dy;
+    const circ = `<circle cx="${rightX}" cy="${y}" r="14" fill="#ffd24a"></circle>
+                  <text x="${rightX}" y="${y+5}" text-anchor="middle" font-size="12" fill="#021427">${id}</text>`;
+    svg.insertAdjacentHTML('beforeend', circ);
+  });
+  // draw existing mapping arrows
+  Object.entries(mapping).forEach(([l,r], idx)=>{
+    if(!r || r==='-') return;
+    const li = domainItems.findIndex(e=>e.dataset.id===l);
+    const ri = codomainItems.findIndex(e=>e.dataset.id===r);
+    if(li===-1 || ri===-1) return;
+    const y1 = leftYstart + li*dy;
+    const y2 = rightYstart + ri*dy;
+    const path = `<path d="M ${leftX+16} ${y1} C ${200} ${y1} ${220} ${y2} ${rightX-16} ${y2}" stroke="#e9f8ff" stroke-width="2" fill="none" marker-end="url(#arrow${idx})"></path>`;
+    svg.insertAdjacentHTML('beforeend', `<defs><marker id="arrow${idx}" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#e9f8ff"/></marker></defs>`);
+    svg.insertAdjacentHTML('beforeend', path);
+  });
+  updateMapStatus();
+}
+
+// selection logic by clicking DOM items
+let selectedLeft = null;
+document.addEventListener('click', (e)=>{
+  const domainEl = e.target.closest('#domain .item');
+  const codomainEl = e.target.closest('#codomain .item');
+  if(domainEl){
+    // select left
+    document.querySelectorAll('#domain .item').forEach(x=>x.style.border='1px dashed rgba(255,255,255,0.03)');
+    domainEl.style.border='2px solid #36b0ff';
+    selectedLeft = domainEl.dataset.id;
+    return;
+  }
+  if(codomainEl && selectedLeft){
+    const rightId = codomainEl.dataset.id;
+    mapping[selectedLeft] = rightId;
+    selectedLeft = null;
+    document.querySelectorAll('#domain .item').forEach(x=>x.style.border='1px dashed rgba(255,255,255,0.03)');
+    renderMapping();
+    return;
+  }
+});
+
+function updateMapStatus(){
+  const status = document.getElementById('map-status');
+  if(!status) return;
+  // compute
+  const rights = Object.values(mapping).filter(v=>v && v!=='-');
+  const uniqueRights = new Set(rights);
+  const isInjective = (rights.length === uniqueRights.size) && rights.length>0;
+  // surjective: check if all codomain items are covered
+  const codomainIds = Array.from(document.querySelectorAll('#codomain .item')).map(e=>e.dataset.id);
+  const covered = codomainIds.every(id => rights.includes(id));
+  const isSurjective = covered && rights.length>0;
+  const isBijective = isInjective && isSurjective;
+  status.innerHTML = `<div class="small">Inyectiva: <strong style="color:${isInjective? '#34d399':'#d1d5db'}">${isInjective}</strong> &nbsp; Sobreyectiva: <strong style="color:${isSurjective? '#ffd24a':'#d1d5db'}">${isSurjective}</strong> &nbsp; Biyectiva: <strong style="color:${isBijective? '#ff8a00':'#d1d5db'}">${isBijective}</strong></div>`;
+}
+
+/* ------------------------
+   Quiz logic
+   ------------------------ */
+function checkAnswer(btn, expected){
+  // get parent .choices
+  const choices = btn.parentElement;
+  const answer = choices.dataset.answer;
+  const resBox = document.getElementById('quiz-result');
+  if(answer===expected){
+    resBox.innerHTML = `<div class="note">✅ Correcto</div>`;
+  } else {
+    resBox.innerHTML = `<div class="note">❌ Revisa la teoría — respuesta incorrecta.</div>`;
+  }
+}
+
+/* ------------------------
+   Inversa checker
+   ------------------------ */
+function checkInverse(){
+  const xVal = Number(document.getElementById('inv-x').value);
+  const out = document.getElementById('inv-output');
+  if(isNaN(xVal)){
+    out.style.display='block'; out.innerHTML = '<div>Ingresa un número en la casilla.</div>'; return;
+  }
+  // example using f(x)=3x-2 and its inverse
+  const f = (x)=> 3*x - 2;
+  const finv = (y)=> (y + 2)/3;
+  const ff = f(finv(xVal));
+  const ffinv = finv(f(xVal));
+  out.style.display='block';
+  out.innerHTML = `<div class="small">f(f⁻¹(${xVal})) = ${ff.toFixed(4)} <br> f⁻¹(f(${xVal})) = ${ffin
+  .toFixed(4)}</div>`;
+}
+
+/* ------------------------
+   Initial render
+   ------------------------ */
+renderMapping();
+
+/* Accessibility quick keyboard nav (optional) */
+document.addEventListener('keydown', (e)=>{
+  if(e.key === '1') navTo('inyectiva');
+  if(e.key === '2') navTo('sobreyectiva');
+  if(e.key === '3') navTo('biyectiva');
+});
+
+</script>
+</body>
+</html>
+
+
